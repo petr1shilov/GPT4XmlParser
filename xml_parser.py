@@ -13,27 +13,37 @@ class GPT4XmlParser:
     OPENAI_API_BASE = 'https://gradient.openai.azure.com/'
 
 
-    def __init__(self, system_prompt_path, xml_file_path) -> None:
-        self.system_prompt_path = system_prompt_path
+    def __init__(
+                    self,
+                    xml_describtion_path, 
+                    xml_file_path, 
+                    openai_api_key_azure= OPENAI_API_KEY_AZURE,
+                    openai_api_version= OPENAI_API_VERSION,
+                    openai_api_base= OPENAI_API_BASE) -> None:
+        
+        self.xml_describtion_path = xml_describtion_path
         self.xml_file_path = xml_file_path
+        self.openai_api_key_azure = openai_api_key_azure
+        self.openai_api_version = openai_api_version
+        self.openai_api_base = openai_api_base
 
-    def __call__(self, user_promt: str) :
-        self.user_promt = user_promt
-        return self.search_candidates()
+        with open(self.xml_file_path, 'rb') as f:
+            self.xml_file = lxml.etree.fromstring(f.read())
+        
 
     def parsing_promt(self) -> str:
-        with open(self.system_prompt_path, 'r', encoding='utf-8') as f:
+        with open(self.xml_describtion_path, 'r', encoding='utf-8') as f:
             promt = f.read()
         return promt
 
-    def query(self) -> str:
+    def query(self, user_promt: str) -> str:
         
         promt = self.parsing_promt()
 
         client = AzureOpenAI(
-                api_key=self.OPENAI_API_KEY_AZURE,
-                api_version=self.OPENAI_API_VERSION,
-                azure_endpoint=self.OPENAI_API_BASE
+                api_key=self.openai_api_key_azure,
+                api_version=self.openai_api_version,
+                azure_endpoint=self.openai_api_base
             )
         
         kwargs = {
@@ -47,7 +57,7 @@ class GPT4XmlParser:
             }
         user = {
                 'role': 'user',
-                'content': self.user_promt, # 'Какие есть авто, у которых меньше 4 дверей?'
+                'content': user_promt, # 'Какие есть авто, у которых меньше 4 дверей?'
             }
         kwargs['_prompt'] = [
                 {'role': 'system',
@@ -75,13 +85,8 @@ class GPT4XmlParser:
 
         return answer 
     
-    def read_xml(self):
-        with open(self.xml_file_path, 'rb') as f:
-            root = lxml.etree.fromstring(f.read())
-        return root
-    
-    def parsing_xpath(self) -> str:
-        answer = self.query() # возможно надо перенести этот метод в query
+    def parsing_xpath(self, user_promt: str) -> str:
+        answer = self.query(user_promt) # возможно надо перенести этот метод в query
         m = re.search('```xpath\n(//offer\[.+\]).*?```', answer, flags=re.DOTALL)
         xpath = m.group(1)
         return xpath
@@ -92,10 +97,10 @@ class GPT4XmlParser:
             return element.tag, \
                             dict(map(self.recursive_dict, element)) or element.text  
 
-    def search_candidates(self) -> list:
-        root = self.read_xml()
-        xpath = self.parsing_xpath()
-        offers_res = root.xpath(xpath)
+    def __call__(self, user_promt: str) -> list :
+        xml_file = self.xml_file
+        xpath = self.parsing_xpath(user_promt)
+        offers_res = xml_file.xpath(xpath)
         offers_list = [self.recursive_dict(offer)[1] for offer in offers_res]
         return offers_list
 

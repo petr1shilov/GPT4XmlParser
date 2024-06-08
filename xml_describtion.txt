@@ -1,5 +1,5 @@
 "Tag mark_id - марка машины, строка, может принимать следующие значения: "
-"'Mercedes-Benz', 'Zeekr'\n"
+"'Mercedes-Benz или Мерседес', 'Zeekr'\n"
 'Tag folder_id - модель машины, строка, может принимать следующие значения:\n'
 "для mark_id 'Mercedes-Benz': E-Класс', 'EQS', 'G-Класс', 'GLC', 'GLE', 'GLE Купе', 'GLS', 'S-Класс'\n"
 "для mark_id 'Zeekr': '001', '009', 'X'\n"
