@@ -85,11 +85,14 @@ class GPT4XmlParser:
 
         return answer 
     
-    def parsing_xpath(self, user_promt: str) -> str:
+    def parsing_xpath(self, user_promt: str):
         answer = self.query(user_promt) # возможно надо перенести этот метод в query
         m = re.search('```xpath\n(//offer\[.+\]).*?```', answer, flags=re.DOTALL)
-        xpath = m.group(1)
-        return xpath
+        if m is None:
+            return answer, False
+        else:
+            xpath = m.group(1)
+            return xpath, True
 
     def recursive_dict(self, element):
             if element.text == None and len(element.attrib):
@@ -99,10 +102,13 @@ class GPT4XmlParser:
 
     def __call__(self, user_promt: str) -> list :
         xml_file = self.xml_file
-        xpath = self.parsing_xpath(user_promt)
-        offers_res = xml_file.xpath(xpath)
-        offers_list = [self.recursive_dict(offer)[1] for offer in offers_res]
-        return offers_list
+        xpath, flag = self.parsing_xpath(user_promt)
+        if flag:
+            offers_res = xml_file.xpath(xpath)
+            offers_list = [self.recursive_dict(offer)[1] for offer in offers_res]
+            return offers_list
+        elif not flag:
+            return xpath
 
     def xml_to_json(self, xml_list):
-        return json.dumps(xml_list, indent = 4) 
+        return json.dumps(xml_list, indent=4, ensure_ascii=False)

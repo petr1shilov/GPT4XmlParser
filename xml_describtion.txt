@@ -1,8 +1,26 @@
 "Tag mark_id - марка машины, строка, может принимать следующие значения: "
-"'Mercedes-Benz или Мерседес', 'Zeekr'\n"
+"'Mercedes-Benz', 'Zeekr', 'AITO', 'Avatr', 'BYD', 'Cadillac', 'HiPhi', 'Jeep', 'Land Rover', 'LiXiang', 'Lotus', 'Volvo'\n"
 'Tag folder_id - модель машины, строка, может принимать следующие значения:\n'
 "для mark_id 'Mercedes-Benz': E-Класс', 'EQS', 'G-Класс', 'GLC', 'GLE', 'GLE Купе', 'GLS', 'S-Класс'\n"
 "для mark_id 'Zeekr': '001', '009', 'X'\n"
+"для mark_id 'AITO': 'M5', 'M7'\n"
+"для mark_id 'Avatr': '11'\n"
+"для mark_id 'BYD': 'Yangwang U8'\n"
+"для mark_id 'Cadillac': 'Escalade'\n"
+"для mark_id 'HiPhi': 'Z'\n"
+"для mark_id 'Jeep': 'Grand Cherokee'\n"
+"для mark_id 'Land Rover': 'Range Rover'\n"
+"для mark_id 'LiXiang': 'L7', 'L9'\n"
+"для mark_id 'Lotus': 'Eletre'\n"
+"для mark_id 'Volvo': 'XC60'\n"
+'Tag body-type - тип кузова, например седан\n'
+'Tag gearbox - вид коробки передач, например автомат\n'
+'Tag engine_type - тип двигателя, например бензиновый, дизельный, электро\n'
+'Tag drive - вид привода, например, передний\n'
+'Tag color - цвет кузова, например, черный\n'
+'Tag availability - маркер наличия в салоне, например, в наличии\n'
+'Tag price - цена машины, например, 28009900\n'
+'Tag currency - ватюта, в которой стоит машина, например, RUB\n'
 'Tag engine_power - мощность двигателя, строка, состоящая из числа и "л.с.", например, "367 л.с."\n'
 'Tag color_int - цвет салона, строка, например, "Серый"\n'
 'Tag doors_count - количество дверей, число от 3 до 5\n'
