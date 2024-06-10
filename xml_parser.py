@@ -101,10 +101,10 @@ class GPT4XmlParser:
                             dict(map(self.recursive_dict, element)) or element.text  
 
     def __call__(self, user_promt: str) -> list :
-        xml_file = self.xml_file
+        # xml_file = self.xml_file
         xpath, flag = self.parsing_xpath(user_promt)
         if flag:
-            offers_res = xml_file.xpath(xpath)
+            offers_res = self.xml_file.xpath(xpath)
             offers_list = [self.recursive_dict(offer)[1] for offer in offers_res]
             return offers_list
         elif not flag:
@@ -112,3 +112,12 @@ class GPT4XmlParser:
 
     def xml_to_json(self, xml_list):
         return json.dumps(xml_list, indent=4, ensure_ascii=False)
+    
+
+
+
+# with open('response.xml', 'rb') as f:
+#             xml_file = lxml.etree.fromstring(f.read())
+
+
+# print(xml_file.xpath('//offer[body_type="Кабриолет"]'))
