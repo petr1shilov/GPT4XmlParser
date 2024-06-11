@@ -88,10 +88,12 @@ class GPT4XmlParser:
     def parsing_xpath(self, user_promt: str):
         answer = self.query(user_promt) # возможно надо перенести этот метод в query
         m = re.search('```xpath\n(//offer\[.+\]).*?```', answer, flags=re.DOTALL)
+        f = re.findall('//offer\[.+\]', answer)
         if m is None:
-            return answer, False
+            return None, False
         else:
-            xpath = m.group(1)
+            # xpath = m.group(1)
+            xpath = f[0]
             return xpath, True
 
     def recursive_dict(self, element):
