@@ -34,4 +34,6 @@
 "Tag doors_count - количество дверей, число от 3 до 5\n"
 "Tag year - год выпуска машины, число больше 2020"
 "Tag geo - местонахожение автомобиля на текущий момент, строка, может принимать следующие значения:"
-"'Транзит в Авилон' - значит скоро будет в наличии, 'Прибыл в Авилон', 'г. Калуга Завод', 'Квота'"
+"'Транзит в Авилон' - значит скоро будет в наличии, 'Прибыл в Авилон', 'г. Калуга Завод', 'Квота'\n"
+"Tag complectation_name - тип комплектации, строка, может принимать следующие значения:"
+"'Pro', 'S+', 'Deluxe', 'Premium Luxury Platinum', 'Limited Plus', 'Altitude', 'Flagship', 'Luxury (Локальная сборка)', 'YOU Edition', 'Autobiography', '011 MMW Limited Edition', 'Z-Sport', 'Sport Platinum', 'ME Edition', 'Deluxe Edition', 'Ultimate', 'Limited', 'Max', 'R+', 'SV', 'Premium (Локальная сборка)', 'Sport (Локальная сборка)', 'Luxury Edition ', 'Base', 'Premium'"

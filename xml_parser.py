@@ -5,6 +5,7 @@ from bs4 import BeautifulSoup
 import re
 import lxml.etree
 import json
+import random
 
 class GPT4XmlParser:
 
@@ -31,14 +32,14 @@ class GPT4XmlParser:
             self.xml_file = lxml.etree.fromstring(f.read())
         
 
-    def parsing_promt(self) -> str:
+    def parsing_xml_describtion(self) -> str:
         with open(self.xml_describtion_path, 'r', encoding='utf-8') as f:
             promt = f.read()
         return promt
 
     def query(self, user_promt: str) -> str:
         
-        promt = self.parsing_promt()
+        promt = self.parsing_xml_describtion()
 
         client = AzureOpenAI(
                 api_key=self.openai_api_key_azure,
@@ -63,9 +64,12 @@ class GPT4XmlParser:
                 {'role': 'system',
                 'content': [
                     'Напиши xpath-запрос к xml, который вернет элементы offer, подходящие пользователю.\n'
+                    'Не пытайся отвечать на сам вопрос, твоя задача только написать правильный xpath-запрос, '
+                    'на основе результатов поиска по нему отвечать будет уже другой бот.\n'
+                    'Не используй метод contains в xpath-запросе\n'
                     'Описание XML:\n'
                     f'{promt}'
-                    'Конец XML'
+                    'Конец описания XML'
                 ][0]
                 },
                 user
@@ -99,15 +103,27 @@ class GPT4XmlParser:
                 return element.tag, element.attrib
             return element.tag, \
                             dict(map(self.recursive_dict, element)) or element.text  
+    
+    def offer_summary(self, offer):
+        return (
+            f"{offer['mark_id']} {offer['folder_id']}, комплектация {offer['complectation_name']}, "
+            f"{offer['body-type']} c {offer['doors_count']} дверями, "
+            f"коробка {offer['gearbox']}, {offer['color']} цвет кузова, {offer['color_int']} цвет салона, "
+            f"{offer['drive']} привод, {offer['engine_type']} двигатель {offer['engine_power']}, "
+            f"цена {offer['price']} {offer['currency']}, {offer['availability']}, местонахождение: {offer['geo']}"
+        )
 
     def __call__(self, user_promt: str) -> list :
         xpath, flag = self.parsing_xpath(user_promt)
         if flag:
             offers_res = self.xml_file.xpath(xpath)
             offers_list = [self.recursive_dict(offer)[1] for offer in offers_res]
-            return offers_list
+            if offers_list is not None and len(offers_list) != 0:
+                random.shuffle(offers_list) 
+                sample_offers = '\n'.join([f'{i+1}. {self.offer_summary(offer)}' for i, offer in enumerate(offers_list[:5])])
+                answer = f'Количество автомобилей, подходящих под описание: {len(offers_list)}. Вот некоторые из них:\n{sample_offers}'
+            else:
+                answer = 'К сожалению, мы ничего не нашли по вашему запросу, попробуйте другие параметры'
+            return answer
         elif not flag:
             return xpath
-
-    def xml_to_json(self, xml_list):
-        return json.dumps(xml_list, indent=4, ensure_ascii=False)
